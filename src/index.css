@@ -106,29 +106,45 @@ body {
   box-sizing: border-box;
 }
 
-h1, h2 {
+/* --- CONTENT HEADINGS (The "Bible" look) --- */
+h1, .content h1 {
   font-family: var(--heading);
   font-weight: 600;
   color: var(--text-h);
-}
-
-h1 {
-  /* Fluid typography: min 40px, max 72px based on viewport width */
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   letter-spacing: -0.05em;
   margin: 2rem 0;
 }
 
-h2 {
-  /* Fluid typography: min 30px, max 48px based on viewport width */
+/* Fluid typography specifically for content body headers */
+.content h1, .content h2 {
+  font-family: var(--heading);
+  font-weight: 600;
+  color: var(--text-h);
   font-size: clamp(1.875rem, 5vw, 3rem);
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0 0 0.75rem;
 }
 
+/* --- UI HEADINGS (The "System" look) --- */
+.ui-heading {
+  font-family: var(--sans);
+  font-weight: 800;
+  color: var(--text-h);
+  letter-spacing: 0.15em;
+  line-height: 1; /* Strict line height to prevent vertical drift */
+  font-size: 1.625rem; 
+}
+
+/* Base H2 rule (now simplified so it doesn't force huge sizes on everything) */
+h2 {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
 p {
-  margin: 0;
+  margin: 1em 0;
 }
 
 code, .counter {
@@ -144,3 +160,12 @@ code {
   padding: 0.25rem 0.5rem;
   background: var(--code-bg);
 }
+
+/* --- Markdown Elements Styles --- */
+.markdown-content h1 { font-family: var(--heading); font-size: 1.875rem; margin-bottom: 1rem; }
+.markdown-content h2 { font-family: var(--heading); font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem;}
+.markdown-content p { color: var(--text); line-height: 1.6; }
+.markdown-content strong { font-weight: bold; color: var(--text-h); }
+.markdown-content ul, .markdown-content ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+.markdown-content li { margin-bottom: 0.25rem; }
+.markdown-content blockquote { border-left: 4px solid var(--accent); padding-left: 1rem; color: var(--text); font-style: italic; background: var(--glass-bg); padding: 1rem; margin: 1rem 0; border-radius: 4px;}

@@ -1,21 +1,27 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchWikiData } from '../services/wikiService';
 
-// The WikiContext stores all data fetched from the campaign_data source.
 const WikiContext = createContext();
 
-/**
- * Provider for the entire wiki application's state.
- * Handles loading all content and identifying the current active page.
- */
+// Maps Sidebar Labels (plural) to Markdown Types (singular)
+const CATEGORY_MAP = {
+  "Characters": "character",
+  "Factions": "faction",
+  "Regions": "region",
+  "Monsters": "monster",
+  "Items": "item",
+  "History": "history",
+  "all": "all"
+};
+
 export const WikiProvider = ({ children }) => {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activePageId, setActivePageId] = useState(null);
   const [error, setError] = useState(null);
+  const [filterCategory, setFilterCategory] = useState('all');
 
   useEffect(() => {
-    // Initial fetch of all wiki data on app mount.
     fetchWikiData()
       .then(data => {
         setEntries(data);
@@ -28,8 +34,22 @@ export const WikiProvider = ({ children }) => {
       });
   }, []);
 
-  // Helper to find a specific entry by its kebab-case ID.
-  const getActivePage = () => entries.find(e => e.parent_id === activePageId) || null;
+  const getActivePage = () => {
+    if (!activePageId) return null;
+    return entries.find(e => 
+      e.path === activePageId || 
+      e.parent_id === activePageId || 
+      e.title.toLowerCase() === activePageId.toLowerCase()
+    ) || null;
+  };
+
+  const getFilteredEntries = () => {
+    if (filterCategory === 'all') return entries;
+    
+    // Look up the correct singular type from our map
+    const dataType = CATEGORY_MAP[filterCategory];
+    return entries.filter(e => e.type === dataType);
+  };
 
   return (
     <WikiContext.Provider value={{
@@ -38,14 +58,16 @@ export const WikiProvider = ({ children }) => {
       error,
       activePageId,
       setActivePageId,
-      getActivePage: getActivePage
+      setFilterCategory,
+      getActivePage: getActivePage,
+      getFilteredEntries: getFilteredEntries,
+      currentFilter: filterCategory // Export this so the UI knows what's active
     }}>
       {children}
     </WikiContext.Provider>
   );
 };
 
-// Custom hook for components to easily access wiki data.
 export const useWiki = () => {
   const context = useContext(WikiContext);
   if (!context) {

@@ -1,122 +1,81 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useWiki } from './context/WikiContext';
+import { Gallery } from './components/wiki/Gallery';
+import { PageViewer } from './components/wiki/PageViewer';
+import { Sidebar } from './components/wiki/Sidebar';
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppContent() {
+  const { entries, loading, error } = useWiki();
+  
+  // Option 2: Set 'character' as the active filter by default instead of null.
+  const [activeFilter, setActiveFilter] = useState('character');
+
+  // This list now stays consistent with your Markdown file types
+  const categories = [
+    { id: 'character', label: 'Characters' },
+    { id: 'faction', label: 'Factions' },
+    { id: 'region', label: 'Regions' },
+    { id: 'monster', label: 'Monsters' },
+    { id: 'item', label: 'Items' },
+    { id: 'history', label: 'History' }
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+        <div className="text-2xl animate-pulse">Loading Campaign Lore...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-red-400 flex items-center justify-center p-4">
+        <div className="text-xl">Error loading wiki: {error}</div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-slate-900 text-white p-4 md:p-8">
+      <header className="mb-12 text-center">
+        <h1 className="text-5xl font-bold mb-2">Campaign Bible</h1>
+        <p className="text-slate-400">Your world, organized.</p>
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Container to keep Sidebar and Gallery aligned */}
+      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto items-start">
+        <Sidebar 
+          // Pass the labels only; the context will handle the filtering logic
+          categories={categories.map(c => c.label)} 
+          onFilterChange={(type) => setActiveFilter(type)} 
+        />
+        <main className="flex-1 w-full">
+          {/* 
+            We pass entries and our activeFilter state to the Gallery.
+            Note: If you want to use the NEW context logic fully, 
+            we can remove 'entries' as a prop later, but this works perfectly now!
+          */}
+          <Gallery 
+            entries={entries} 
+            filterType={activeFilter} 
+          />
+        </main>
+      </div>
+    </div>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AppContent />} />
+        <Route path="/wiki/:id" element={<PageViewer />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
