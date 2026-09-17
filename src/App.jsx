@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useWiki } from './context/WikiContext';
 import { Gallery } from './components/wiki/Gallery';
@@ -7,18 +7,17 @@ import { Sidebar } from './components/wiki/Sidebar';
 import { SearchBar } from './components/wiki/SearchBar';
 
 function AppContent() {
-  const { entries, loading, error } = useWiki();
-  // Option 2: Set 'character' as the active filter by default.
-  const [activeFilter, setActiveFilter] = useState('character');
+  // We now extract setFilterCategory directly from the hook.
+  // This is our "Source of Truth" for what category is currently active.
+  const { entries, loading, error, setFilterCategory } = useWiki();
 
-  // Hardcoded categories to ensure consistency between UI and Context mapping
   const categories = [
-    { id: 'character', label: 'Characters' },
-    { id: 'faction', label: 'Factions' },
-    { id: 'region', label: 'Regions' },
-    { id: 'monster', label: 'Monsters' },
-    { id: 'item', label: 'Items' },
-    { id: 'history', label: 'History' }
+    'characters', // Row 1 - Item 1
+    'factions',   // Row 1 - Item 2
+    'regions',    // Row 1 - Item 3
+    'history',    // Row 1 - Item 4
+    'monsters',   // Row 2 - Item 1
+    'items'       // Row 2 - Item 2
   ];
 
   if (loading) {
@@ -38,24 +37,33 @@ function AppContent() {
   }
 
   return (
-    // Added bottom padding (pb-32) so the content doesn't get hidden behind the fixed search bar
-    <div className="min-h-screen bg-slate-900 text-white p-4 md:p-8 pb-32">
-      <header className="mb-12 text-center">
-        <h1 className="text-5xl font-bold mb-2">Campaign Bible</h1>
-        <p className="text-slate-400">Your world, organized.</p>
+    <div className="min-h-screen bg-slate-900 text-white p-3 md:p-8 pb-32">
+      {/* Header Compression */}
+      <header className="mb-4 text-center">
+        {/* FIX: Changed mb-[-4px] to mb-0 as suggested by Tailwind Linter */}
+        <h1 className="text-3xl md:text-6xl font-bold mb-0">Campaign Bible</h1>
+        <p className="text-slate-400 text-[10px] md:text-base leading-none">Your world, organized.</p>
       </header>
 
-      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto items-start">
+      {/* 
+         Navigation Fix:
+         The Sidebar now calls setFilterCategory directly from the context.
+         This ensures that clicking a button updates the Source of Truth.
+      */}
+      <div className="w-full flex flex-col items-center">
         <Sidebar 
-          categories={categories.map(c => c.label)} 
-          onFilterChange={(type) => setActiveFilter(type)} 
+          categories={categories} 
+          onFilterChange={(type) => {
+            console.log("Filtering for:", type); // Debug line to see it work in console
+            setFilterCategory(type); // Updating the context directly!
+          }} 
         />
-        <main className="flex-1 w-full">
-          <Gallery entries={entries} filterType={activeFilter} />
+        <main className="w-full mt-4">
+          {/* Gallery now pulls its own filtered data from the hook automatically */}
+          <Gallery />
         </main>
       </div>
 
-      {/* Fixed Bottom Search Bar */}
       <SearchBar />
     </div>
   );

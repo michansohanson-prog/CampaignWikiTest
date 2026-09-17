@@ -2,28 +2,55 @@ import React from 'react';
 
 /**
  * A glassmorphic card component for displaying a single wiki entry.
- * 
- * @param {Object} entry - The data object for the wiki entry.
- * @param {string} entry.title - The title of the entry.
- * @param {string} entry.summary - A short summary blurb.
- * @param {string[]} entry.tags - An array of tags/categories.
- * @param {Function} onClick - Callback for when a card is clicked.
  */
-export const WikiCard = ({ entry, onClick }) => {
+export const WikiCard = ({ entry, onClick, compact = false }) => {
+  // Base styles: Unified behavior for height and layout
+  const baseStyles = `p-3 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-blue-500 transition-all duration-200 cursor-pointer group flex flex-col justify-between`;
+
+  // COMPACT (Button) styling
+  const compactStyles = "p-3";
+  const titleStylesComp = "text-lg font-bold mb-0 leading-tight";
+  const summaryStylesComp = "text-[11px] text-slate-400 line-clamp-2 mt-0.5";
+  const tagsContainerStyleComp = "mt-1 flex flex-wrap gap-[0.5px]";
+
+  // HIGH DENSITY (Long Tile) styling - THIS IS WHAT YOU WANTED
+  // We are using smaller font sizes and tighter margins to compress the height significantly.
+  const titleStylesDense = "text-lg font-bold mb-0 leading-tight text-slate-100"; // Smaller than xl
+  const summaryStylesDense = "text-[13px] text-slate-400 line-clamp-2 mt-0.5 leading-relaxed"; // Smaller than base
+  const tagsContainerStyleDense = "mt-auto pt-2 flex flex-wrap gap-1.5";
+
   return (
-    <div
-      onClick={onClick}
-      className="p-6 rounded-xl bg-slate-800/50 border border-slate-700 hover:border-blue-500 transition-all duration-200 cursor-pointer group"
-    >
-      <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">
-        {entry.title}
-      </h3>
-      <p className="text-slate-400 text-sm line-clamp-3">
-        {entry.summary || "No summary available."}
-      </p>
-      <div className="mt-4 flex flex-wrap gap-2">
+    <div className={`${baseStyles} ${compact ? compactStyles : ""}`} onClick={onClick}>
+      <div>
+        {/* Title */}
+        <h3 className={`group-hover:text-blue-400 transition-colors ${compact ? titleStylesComp : titleStylesDense}`}>
+          {entry.title}
+        </h3>
+
+        {!compact ? (
+          /* Summary for Long Tiles: Now using a smaller, denser font */
+          <p className={summaryStylesDense}>
+            {entry.summary || "No summary available."}
+          </p>
+        ) : (
+          /* Summary/Type for Buttons */
+          <p className="text-[9px] text-slate-500 uppercase tracking-widest mt-0">
+            {entry.type || "Entry"}
+          </p>
+        )}
+      </div>
+
+      {/* Tags */}
+      <div className={compact ? tagsContainerStyleComp : tagsContainerStyleDense}>
         {entry.tags?.map((tag, i) => (
-          <span key={i} className="text-[10px] uppercase tracking-widest bg-slate-700 px-2 py-1 rounded text-slate-300">
+          <span 
+            key={i} 
+            className={`uppercase tracking-wider rounded ${
+              compact 
+                ? "text-[6px] md:text-[7px] leading-none bg-slate-700 px-0.5 py-0 text-slate-400" 
+                : "text-[9px] bg-slate-700/50 px-1.5 py-0.5 border border-slate-600/30 text-slate-400"
+            }`}
+          >
             {tag}
           </span>
         ))}

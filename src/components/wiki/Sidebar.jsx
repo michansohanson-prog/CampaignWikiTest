@@ -1,41 +1,37 @@
 import React from 'react';
-import { useWiki } from '../../context/WikiContext';
 
 /**
- * A navigation sidebar for filtering the wiki by category.
+ * A navigation component for filtering the wiki by category.
+ * Refactored to use a centered flex-wrap layout with canonical Tailwind classes.
  */
-export const Sidebar = ({ categories }) => {
-  const { setFilterCategory, activePageId } = useWiki();
-
+export const Sidebar = ({ categories, onFilterChange }) => {
   return (
-    <aside className="w-full md:w-64 h-fit p-6 bg-slate-800/30 backdrop-blur-md border border-slate-700 rounded-xl shadow-xl flex flex-col">
-      <div className="mt-2 mb-12 w-full text-center">
-        <div className="ui-heading uppercase tracking-[0.15em] inline-block">
-          Categories
-        </div>
-      </div>
-
-      <nav className="flex flex-col gap-3 w-full items-start">
+    /* 
+       LAYOUT CHANGES:
+       1. Removed the fixed max-width and 'aside' behavior that anchors it to the left.
+       2. Added mx-auto to ensure it always centers itself in its parent container.
+    */
+    <nav className="w-full mx-auto p-1 bg-slate-800/30 backdrop-blur-md border border-slate-700 rounded-lg shadow-xl">
+      <div className="flex flex-wrap justify-center gap-2 w-full max-w-full mx-auto">
         {categories.map((type) => {
-          const isActive = activePageId === null && type === 'all'; // Simplified check for active
-          // You can improve this check to see if the current entry matches the category
-          
           return (
             <button
               key={type}
-              onClick={() => setFilterCategory(type)}
-              className={`text-left px-4 py-2 rounded-lg transition-all duration-200 w-full border ${
-                type === 'all' ? 'bg-blue-600/20 border-blue-600/30 text-blue-400' : 
-                                 'border-transparent hover:bg-blue-600/20 hover:text-blue-400'
-              }`}
+              onClick={() => onFilterChange(type)}
+              /* 
+                 UI CHANGES:
+                 - Added min-w-15 to satisfy the linter and ensure buttons are uniform.
+                 - Replaced flex-grow with grow for standard Tailwind syntax.
+              */
+              className="grow justify-center py-2 px-3 rounded-md border transition-all duration-200 text-[10px] md:text-sm font-medium 
+                hover:bg-blue-600/20 hover:border-blue-600/30 
+                active:scale-95 min-w-15"
             >
-              <span className="transition-colors">
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </span>
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           );
         })}
-      </nav>
-    </aside>
+      </div>
+    </nav>
   );
 };

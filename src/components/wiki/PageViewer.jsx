@@ -1,19 +1,28 @@
 import React from 'react';
 import { useWiki } from '../../context/WikiContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
-/**
- * Component to display the detailed view of a specific wiki entry.
- * 
- * @param {string} id - The kebab-case ID of the entry (from URL).
- */
-export const PageViewer = ({ id }) => {
-  const { getActivePage, entries } = useWiki();
+export const PageViewer = () => {
+  const params = useParams();
+  const id = params.id; 
+  const { entries } = useWiki();
   const navigate = useNavigate();
 
-  // Find the current entry based on path or parent_id
-  const currentEntry = entries?.find(e => e.path === id) || entries?.find(e => e.parent_id === id);
+  const findEntry = () => {
+    if (!entries || !id) return null;
+
+    const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const normalizedId = normalize(id);
+
+    return entries.find(e => 
+      e.path === id || 
+      e.parent_id === id || 
+      normalize(e.title) === normalizedId
+    );
+  };
+
+  const currentEntry = findEntry();
 
   if (!currentEntry) {
     return (
@@ -23,28 +32,57 @@ export const PageViewer = ({ id }) => {
     );
   }
 
+  const Img = ({ src, alt }) => {
+    let finalSrc = src;
+    if (src && !src.startsWith('/')) {
+      finalSrc = `/campaign_data/${src}`;
+    }
+
+    return (
+      <img 
+        src={finalSrc} 
+        alt={alt || 'Wiki Content'} 
+        className="max-w-full h-auto mx-auto my-4 rounded-xl border border-white/10 shadow-2xl shadow-black/20 object-contain"
+      />
+    );
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <div className="max-w-4xl mx-auto p-3 md:p-8">
+      {/* mb-0 to move the title as close as possible to the button */}
       <button 
         onClick={() => navigate('/')}
-        className="mb-8 text-blue-400 hover:underline flex items-center gap-2"
+        className="mb-0 text-blue-400 hover:underline flex items-center gap-2"
       >
         ← Back to Gallery
       </button>
-      
-      <header className="mb-8 border-b border-slate-800 pb-8">
-        <h1 className="text-5xl font-bold mb-4">{currentEntry.title}</h1>
-        <div className="flex flex-wrap gap-2">
+
+      {/* Reduced mb from 2 to 1, and pb set to 0 */}
+      <header className="mb-1 border-b border-slate-800 pb-0">
+        {/* 
+           Used text-lg for mobile (landscape) to save height. 
+           Added leading-none to eliminate the vertical air between lines.
+        */}
+        <h1 className="text-lg md:text-6xl font-bold mb-0 leading-none">{currentEntry.title}</h1>
+        
+        {/* No margin top here; tags will sit directly against the bottom of the title */}
+        <div className="flex flex-wrap gap-1 mt-0">
           {currentEntry.tags?.map((tag, i) => (
-            <span key={i} className="text-[10px] uppercase tracking-widest bg-blue-900/50 border border-blue-700 px-3 py-1 rounded text-blue-200">
+            <span key={i} className="text-[8px] uppercase tracking-widest bg-blue-900/50 border border-blue-700 px-2 py-0 rounded text-blue-200">
               {tag}
             </span>
           ))}
         </div>
       </header>
-      
-      <article className="markdown-content prose max-w-none">
-        <ReactMarkdown>{currentEntry.content}</ReactMarkdown>
+
+      <article className="markdown-content prose max-w-none mt-2">
+        <ReactMarkdown 
+          components={{
+            img: Img
+          }}
+        >
+          {currentEntry.content}
+        </ReactMarkdown>
       </article>
     </div>
   );

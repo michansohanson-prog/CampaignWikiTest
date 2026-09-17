@@ -6,6 +6,8 @@ tags: ["rogue", "renegade", "mercenary"]
 summary: A mysterious rogue known for her ability to move through shadows unseen.
 ---
 
+![Portrait](assets/elara-shadowstep-portrait.webp)
+
 > **Note:** This profile is subject to change as the campaign progresses.
 
 *Age: 28 | Race: Half-Elf | Class: Rogue*

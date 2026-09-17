@@ -4,39 +4,53 @@ import { WikiCard } from '../ui/WikiCard';
 import { useWiki } from '../../context/WikiContext';
 
 /**
- * The main gallery view that displays wiki entries, with optional category filtering.
+ * The main gallery view that displays wiki entries as "Long Tiles."
  */
 export const Gallery = () => {
   const navigate = useNavigate();
-  const { getFilteredEntries, loading, currentFilter } = useWiki();
+  // We pull the filtered data directly from the hook.
+  const { getFilteredEntries, loading } = useWiki();
 
+  // IMPORTANT: Removed useMemo here. 
+  // By calling the function directly, it re-evaluates every time the context updates.
   const filteredEntries = getFilteredEntries();
 
   if (loading) return <div className="text-center mt-20">Loading Lore...</div>;
 
-  if (filteredEntries.length === 0) {
-    // Clean up the error message to avoid pluralization bugs
+  if (!filteredEntries || filteredEntries.length === 0) {
     return (
-      <div className="text-center text-slate-500 mt-20">
-        {currentFilter !== 'all' ? `No ${currentFilter} entries found.` : "No entries found."}
+      <div className="text-center text-slate-500 mt-20 p-8 border border-slate-800 rounded-xl">
+        No entries found.
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    /* 
+       PRESERVED LAYOUT:
+       1. grid-cols-1 ensures the "Long Tile" vertical stack you requested.
+       2. No fixed height constraint to allow summaries to be fully visible.
+    */
+    <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4 p-2 md:p-0">
       {filteredEntries.map((entry, index) => {
-        // Standardize the path to a clean ID for navigation
         const entryId = entry.path.split('/').pop().replace('.md', '');
         
         return (
-          <WikiCard 
-            key={index} 
-            entry={entry} 
-            onClick={() => navigate(`/wiki/${entryId}`)} 
-          />
+          <div key={index} className="w-full">
+            {/* 
+               We use compact={false} to ensure the long tile look with summaries 
+               is preserved while using your "High Density" font sizes.
+            */}
+            <WikiCard 
+              entry={entry} 
+              onClick={() => navigate(`/wiki/${entryId}`)} 
+              compact={false} 
+            />
+          </div>
         );
       })}
     </div>
   );
 };
+
+export default Gallery;

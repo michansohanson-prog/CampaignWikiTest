@@ -6,6 +6,8 @@ tags: ["tragedy", "monsters", "ancient"]
 summary: A catastrophic plague of undead that devastated the southern kingdoms 200 years ago.
 ---
 
+![History](assets/great-scourge-history.webp)
+
 # The Great Scourge
 The Great Scourge was a period of unprecedented horror when the dead began to rise in unison across the Southern Reach. For three decades, entire cities were abandoned as necromancy-tainted rot spread through the land.
 
