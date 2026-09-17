@@ -24,17 +24,13 @@ export const PageViewer = () => {
 
   const currentEntry = findEntry();
 
-  // --- THE FIX: Smart Content Filter ---
   const getCleanContent = (content, title) => {
     if (!content) return "";
-    
     const lines = content.split('\n');
     const firstLine = lines[0]?.trim();
-    
     if (firstLine && firstLine.toLowerCase() === title.toLowerCase()) {
       return lines.slice(1).join('\n').trim();
     }
-    
     return content;
   };
 
@@ -51,7 +47,6 @@ export const PageViewer = () => {
     if (src && !src.startsWith('/')) {
       finalSrc = `/campaign_data/${src}`;
     }
-
     return (
       <img 
         src={finalSrc} 
@@ -65,7 +60,6 @@ export const PageViewer = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden text-white">
-      {/* --- BACKGROUND LAYERS --- */}
       <div className="fixed inset-0 bg-emerald-950 -z-30" />
       <div 
         className="fixed inset-0 -z-20 opacity-50"
@@ -80,14 +74,7 @@ export const PageViewer = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-900/30 blur-[120px] rounded-full" />
         <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] bg-amber-900/10 blur-[100px] rounded-full" />
       </div>
-      <div 
-        className="fixed inset-0 -z-10 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-        }}
-      />
 
-      {/* --- CONTENT LAYER --- */}
       <div className="max-w-4xl mx-auto p-3 md:p-8 pb-32 relative z-10">
         <button 
           onClick={() => navigate('/')}
@@ -103,7 +90,7 @@ export const PageViewer = () => {
           >
             {currentEntry.title}
           </h1>
-          
+
           <div className="flex flex-wrap gap-1 mt-0">
             {currentEntry.tags?.map((tag, i) => (
               <span key={i} className="text-[8px] uppercase tracking-widest bg-orange-900/50 border border-orange-700 px-2 py-0 rounded text-orange-200">
@@ -119,11 +106,7 @@ export const PageViewer = () => {
               img: Img,
               h1: () => null, 
               p: ({node, ...props}) => (
-                <p 
-                  className="mb-6 leading-loose text-[1.05rem]" 
-                  style={{ color: '#e2e8f0' }}
-                  {...props} 
-                />
+                <p className="mb-6 leading-loose text-[1.05rem] text-[#e2e8f0]" {...props} />
               ),
               h2: ({node, ...props}) => (
                 <h2 
@@ -143,7 +126,11 @@ export const PageViewer = () => {
                   className="font-bold text-amber-200/90" 
                   {...props} 
                 />
-              )
+              ),
+              // Removed li, ul, and ol styling to prevent bullet points
+              ul: ({node, ...props}) => <div className="mb-4" {...props} />,
+              ol: ({node, ...props}) => <div className="mb-4" {...props} />,
+              li: ({node, ...props}) => <div className="mb-1" {...props} />
             }}
           >
             {cleanedContent}
