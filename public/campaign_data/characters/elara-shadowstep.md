@@ -2,7 +2,6 @@
 title: Elara Shadowstep
 type: character
 parent_id: root
-tags: ["rogue", "renegade", "mercenary"]
 summary: A mysterious rogue known for her ability to move through shadows unseen.
 ---
 

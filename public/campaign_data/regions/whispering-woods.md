@@ -2,7 +2,6 @@
 title: Whispering Woods
 type: region
 parent_id: root
-tags: ["forest", "dangerous", "magic"]
 summary: A dense, ancient forest where the trees are said to share memories through their roots.
 ---
 

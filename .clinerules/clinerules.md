@@ -1,3 +1,6 @@
+Here is the fully updated and consolidated content for your `.clinerules/clinerules.md` file. It now includes all our previous updates, the requirement for Plan Mode exclusivity, the rule for providing complete copy/pasteable files, and the critical distinction between Instructional Paths and Source Code paths.
+
+```markdown
 # Project Context & Rules: MyCampaignWebApp (DnD Campaign Wiki)
 
 ## 1. Core Identity & Philosophy
@@ -21,10 +24,9 @@ Every feature must follow the **Service -> Hook -> Component** pipeline. Do not 
 - **Data Abstraction:** The service layer must be abstracted from the storage method. It must support a dual-mode approach: 
     1. **Local Mode:** Accessing local files for DM development or internal testing.
     2. **Remote Mode:** Fetching data from a hosted URL (GitHub Pages/Cloud) for player access.
-- **Implementation:** Each major entity (e.g., Characters, Lore, Quests, Items) must have its own dedicated file in `src/services`.
 
-### B. Logic Layer (`src/hooks`)
-- All business logic, state management (`useState`/`useReducer`), and side-effects (`useEffect`) must be extracted into Custom Hooks.
+### B. Logic Layer (`src/hooks` & `src/context`)
+- All business logic, state management (`useState`/`useReducer`), and side-effects (`useEffect`) must be extracted into Custom Hooks or Contexts.
 - Components should only contain UI layout code and "call" hooks to get data or trigger actions.
 
 ### C. Presentation Layer (`src/components`)
@@ -33,7 +35,8 @@ Every feature must follow the **Service -> Hook -> Component** pipeline. Do not 
 
 ## 4. Data & Scalability Requirements
 - **Markdown Format:** All data is stored as `.md` files with YAML Frontmatter for metadata.
-- **Data Schema:** Every Markdown file MUST include the following fields in its header: title, type (faction|monster|region|character|item|history), parent_id (kebab-case), tags, and summary.
+- **Data Schema:** Every Markdown file MUST include the following fields in its header: title, type (faction|monster|region|character|item|history), parent_id (kebab-case), and summary. 
+    - *Note: Tags functionality is officially deprecated and removed from the schema.*
 - **Lightweight Parsing:** For parsing frontmatter in the browser, use simple string manipulation or lightweight, zero-dependency parsers to avoid Node.js runtime conflicts. 
 - **Pagination/Lazy Loading:** Implement client-side pagination or scroll-loading for any list exceeding 50 items.
 - **Optimization:** Use `useMemo` and `useCallback` for expensive calculations or to prevent unnecessary re-renders in large lists.
@@ -44,9 +47,12 @@ Every feature must follow the **Service -> Hook -> Component** pipeline. Do not 
 - **Glassmorphism:** Apply transparency and blur effects consistently to follow the project's aesthetic.
 
 ## 6. AI Implementation Instructions
+- **Operational Mode:** You are required to operate exclusively in **Plan mode**. Do not proceed to execution without explicit user approval after a plan has been reviewed.
 - **Plan First:** Always output a structured plan before writing code. Detail which files will be created/modified and why.
-- **Absolute Paths:** Always refer to files using absolute paths from the project root in your instructions.
-- **No Placeholders:** Never provide code with `// ... rest of code` or placeholders; always provide full, functional blocks.
+- **Pathing Distinction:** 
+    - **Instructional Paths (AI Only):** When communicating with the user or invoking tools, always use **absolute paths** for file references to ensure precision.
+    - **Source Code Paths:** Never use absolute paths within the source code. All assets and data fetches must use **relative paths** compatible with the Vite base configuration (e.g., `./campaign_data/...`).
+- **Code Delivery Standard:** Provide complete, functional code blocks directly in the chat for any edit or file creation. **Never provide placeholders** (e.g., `// ... rest of code`). The code must be complete and ready for immediate copy/paste by the user.
 
 ## 7. Version Control & Milestones
 To ensure progress is never lost and development remains organized:
@@ -62,3 +68,4 @@ CRITICAL SYSTEM DIRECTIVES:
 5. POWERSHELL 7 / WINDOWS: When writing scripts, use PowerShell 7 syntax only (no Bash, no `&&`). Append `-Force` or `-Confirm:$false` where applicable.
 6. ZERO LOOPS: State actions briefly and stop. Do not ask repetitive permission questions.
 7. NAMING CONVENTION: All files within the campaign_data folder must use **kebab-case** for filenames (e.g., `dragon-king.md`, `the-whispering-forest.md`). Avoid spaces, periods, or special characters in filenames.
+```

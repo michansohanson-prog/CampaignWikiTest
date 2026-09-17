@@ -14,7 +14,7 @@ export const WikiCard = ({ entry, onClick, compact = false }) => {
     if (!searchQuery || !text || searchQuery.trim().length < 2) return text;
     
     // We escape the query to prevent it from breaking the Regex if they type special characters like [ ] ( ) * +
-    const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
 
     // We split by the match and map it back together
@@ -41,16 +41,14 @@ export const WikiCard = ({ entry, onClick, compact = false }) => {
   const compactStyles = "p-3";
   const titleStylesComp = "text-lg font-bold mb-0 leading-tight text-amber-100";
   const summaryStylesComp = "text-[11px] text-slate-400 line-clamp-2 mt-0.5";
-  const tagsContainerStyleComp = "mt-1 flex flex-wrap gap-[0.5px]";
 
   // HIGH DENSITY (Long Tile) styling
   const titleStylesDense = "text-lg font-bold mb-0 leading-tight text-[#c08e5a] drop-shadow-[0_1px_4px_rgba(192,142,90,0.3)] group-hover:text-amber-200 transition-colors"; 
-  const summaryStylesDense = "text-[1.05rem] text-[#e2e8f0] line-clamp-2 mt-0.5 leading-loose"; 
-  const tagsContainerStyleDense = "mt-auto pt-2 flex flex-wrap gap-1.5";
+  const summaryStylesDense = "text-[1.05rem] text-[#e2e8f0] line-clamp-2 mt-0.5 leading-loose";
 
   return (
     <div className={`${baseStyles} ${compact ? compactStyles : ""}`} onClick={onClick}>
-      <div className="flex-grow">
+      <div className="grow">
         {/* Title with Highlighting */}
         <h3 className={`group-hover:text-amber-200 transition-colors ${compact ? titleStylesComp : titleStylesDense}`}>
           {renderHighlightedText(entry.title)}
@@ -69,21 +67,7 @@ export const WikiCard = ({ entry, onClick, compact = false }) => {
         )}
       </div>
 
-      {/* Tags */}
-      <div className={compact ? tagsContainerStyleComp : tagsContainerStyleDense}>
-        {entry.tags?.map((tag, i) => (
-          <span 
-            key={i} 
-            className={`uppercase tracking-wider rounded ${
-              compact 
-                ? "text-[6px] md:text-[7px] leading-none bg-slate-700 px-0.5 py-0 text-slate-400" 
-                : "text-[9px] bg-slate-700/50 px-1.5 py-0.5 border border-slate-600/30 text-slate-400"
-            }`}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+      {/* Tag section removed from here to clean up visuals */}
     </div>
   );
 };

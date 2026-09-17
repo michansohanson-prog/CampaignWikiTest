@@ -2,7 +2,6 @@
 title: The Iron Heralds
 type: faction
 parent_id: root
-tags: ["militaristic", "order", "mercenary"]
 summary: A disciplined mercenary company known for their heavy armor and unwavering loyalty.
 ---
 

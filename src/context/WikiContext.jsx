@@ -22,7 +22,7 @@ export const WikiProvider = ({ children }) => {
   const [error, setError] = useState(null);
   // State for category filtering
   const [filterCategory, setFilterCategory] = useState('all');
-  // New state for search query
+  // State for search query
   const [searchQuery, setSearchQuery] = useState('');
   // State for the active page ID (navigating to a specific entry)
   const [activePageId, setActivePageId] = useState(null);
@@ -40,7 +40,7 @@ export const WikiProvider = ({ children }) => {
       });
   }, []);
 
-  // --- NEW: Clear search query when category changes ---
+  // Clear search query when category changes
   useEffect(() => {
     setSearchQuery('');
   }, [filterCategory]);
@@ -55,21 +55,17 @@ export const WikiProvider = ({ children }) => {
    */
   const getFilteredEntries = () => {
     // PRIORITY 1: Global Search Mode
-    // If there is a search query, we ignore the category filter entirely
-    // and search across the entire database to ensure "Global" behavior.
     if (searchQuery.trim().length > 0) {
       const query = searchQuery.toLowerCase();
       return entries.filter(entry => {
         return (
           entry.title.toLowerCase().includes(query) ||
-          (entry.summary && entry.summary.toLowerCase().includes(query)) ||
-          entry.tags?.some(tag => tag.toLowerCase().includes(query))
+          (entry.summary && entry.summary.toLowerCase().includes(query))
         );
       });
     }
 
     // PRIORITY 2: Browsing Mode (Category Filter)
-    // If the search bar is empty, we show only what's in the selected category.
     let filtered = entries;
     if (filterCategory !== 'all') {
       const dataType = CATEGORY_MAP[filterCategory];

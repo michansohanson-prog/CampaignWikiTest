@@ -2,7 +2,6 @@
 title: Sunblade of Aethelgard
 type: item
 parent_id: root
-tags: ["holy", "weapon", "rare"]
 summary: A glowing longsword that radiates warmth and burns the undead.
 ---
 

@@ -2,7 +2,6 @@
 title: Void Stalker
 type: monster
 parent_id: root
-tags: ["beast", "shadow", "predator"]
 summary: A predatory creature from the ethereal plane that feeds on fear.
 ---
 

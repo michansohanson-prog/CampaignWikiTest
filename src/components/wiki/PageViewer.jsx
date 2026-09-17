@@ -26,11 +26,14 @@ export const PageViewer = () => {
 
   const getCleanContent = (content, title) => {
     if (!content) return "";
+
     const lines = content.split('\n');
     const firstLine = lines[0]?.trim();
+
     if (firstLine && firstLine.toLowerCase() === title.toLowerCase()) {
       return lines.slice(1).join('\n').trim();
     }
+
     return content;
   };
 
@@ -90,14 +93,6 @@ export const PageViewer = () => {
           >
             {currentEntry.title}
           </h1>
-
-          <div className="flex flex-wrap gap-1 mt-0">
-            {currentEntry.tags?.map((tag, i) => (
-              <span key={i} className="text-[8px] uppercase tracking-widest bg-orange-900/50 border border-orange-700 px-2 py-0 rounded text-orange-200">
-                {tag}
-              </span>
-            ))}
-          </div>
         </header>
 
         <article className="markdown-content max-w-none mt-6 text-[#e2e8f0]">
@@ -127,10 +122,15 @@ export const PageViewer = () => {
                   {...props} 
                 />
               ),
-              // Removed li, ul, and ol styling to prevent bullet points
-              ul: ({node, ...props}) => <div className="mb-4" {...props} />,
-              ol: ({node, ...props}) => <div className="mb-4" {...props} />,
-              li: ({node, ...props}) => <div className="mb-1" {...props} />
+              li: ({node, ...props}) => (
+                <li className="list-disc list-inside mb-1 text-[#e2e8f0]" {...props} />
+              ),
+              ul: ({node, ...props}) => (
+                <ul className="list-disc list-inside mb-4 text-[#e2e8f0]" {...props} />
+              ),
+              ol: ({node, ...props}) => (
+                <ol className="list-decimal list-inside mb-4 text-[#e2e8f0]" {...props} />
+              )
             }}
           >
             {cleanedContent}

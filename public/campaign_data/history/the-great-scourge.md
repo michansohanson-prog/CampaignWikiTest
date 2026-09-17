@@ -2,7 +2,6 @@
 title: The Great Scourge
 type: history
 parent_id: root
-tags: ["tragedy", "monsters", "ancient"]
 summary: A catastrophic plague of undead that devastated the southern kingdoms 200 years ago.
 ---
 
