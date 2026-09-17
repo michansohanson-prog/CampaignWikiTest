@@ -24,9 +24,23 @@ export const PageViewer = () => {
 
   const currentEntry = findEntry();
 
+  // --- THE FIX: Smart Content Filter ---
+  const getCleanContent = (content, title) => {
+    if (!content) return "";
+    
+    const lines = content.split('\n');
+    const firstLine = lines[0]?.trim();
+    
+    if (firstLine && firstLine.toLowerCase() === title.toLowerCase()) {
+      return lines.slice(1).join('\n').trim();
+    }
+    
+    return content;
+  };
+
   if (!currentEntry) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-8">
+      <div className="min-h-screen bg-emerald-950 text-white flex items-center justify-center p-8">
         <div className="text-2xl">Page not found.</div>
       </div>
     );
@@ -47,43 +61,103 @@ export const PageViewer = () => {
     );
   };
 
+  const cleanedContent = getCleanContent(currentEntry.content, currentEntry.title);
+
   return (
-    <div className="max-w-4xl mx-auto p-3 md:p-8">
-      {/* mb-0 to move the title as close as possible to the button */}
-      <button 
-        onClick={() => navigate('/')}
-        className="mb-0 text-blue-400 hover:underline flex items-center gap-2"
-      >
-        ← Back to Gallery
-      </button>
+    <div className="relative min-h-screen w-full overflow-x-hidden text-white">
+      {/* --- BACKGROUND LAYERS --- */}
+      <div className="fixed inset-0 bg-emerald-950 -z-30" />
+      <div 
+        className="fixed inset-0 -z-20 opacity-50"
+        style={{
+          background: `linear-gradient(135deg, #3d1a1a 0%, #062c1d 50%, #4a2c1a 100%)`,
+          backgroundSize: '400% 400%',
+          animation: 'auroraMove 20s ease infinite'
+        }}
+      />
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-950/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-900/30 blur-[120px] rounded-full" />
+        <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] bg-amber-900/10 blur-[100px] rounded-full" />
+      </div>
+      <div 
+        className="fixed inset-0 -z-10 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+        }}
+      />
 
-      {/* Reduced mb from 2 to 1, and pb set to 0 */}
-      <header className="mb-1 border-b border-slate-800 pb-0">
-        {/* 
-           Used text-lg for mobile (landscape) to save height. 
-           Added leading-none to eliminate the vertical air between lines.
-        */}
-        <h1 className="text-lg md:text-6xl font-bold mb-0 leading-none">{currentEntry.title}</h1>
-        
-        {/* No margin top here; tags will sit directly against the bottom of the title */}
-        <div className="flex flex-wrap gap-1 mt-0">
-          {currentEntry.tags?.map((tag, i) => (
-            <span key={i} className="text-[8px] uppercase tracking-widest bg-blue-900/50 border border-blue-700 px-2 py-0 rounded text-blue-200">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </header>
-
-      <article className="markdown-content prose max-w-none mt-2">
-        <ReactMarkdown 
-          components={{
-            img: Img
-          }}
+      {/* --- CONTENT LAYER --- */}
+      <div className="max-w-4xl mx-auto p-3 md:p-8 pb-32 relative z-10">
+        <button 
+          onClick={() => navigate('/')}
+          className="mb-0 text-amber-200 hover:underline flex items-center gap-2"
         >
-          {currentEntry.content}
-        </ReactMarkdown>
-      </article>
+          ← Back to Gallery
+        </button>
+
+        <header className="mb-1 border-b border-white/10 pb-0">
+          <h1 
+            className="text-2xl md:text-5xl font-bold mb-0 leading-none tracking-wide drop-shadow-[0_3px_10px_rgba(192,142,90,0.5)]"
+            style={{ color: '#c08e5a' }}
+          >
+            {currentEntry.title}
+          </h1>
+          
+          <div className="flex flex-wrap gap-1 mt-0">
+            {currentEntry.tags?.map((tag, i) => (
+              <span key={i} className="text-[8px] uppercase tracking-widest bg-orange-900/50 border border-orange-700 px-2 py-0 rounded text-orange-200">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <article className="markdown-content max-w-none mt-6 text-[#e2e8f0]">
+          <ReactMarkdown 
+            components={{
+              img: Img,
+              h1: () => null, 
+              p: ({node, ...props}) => (
+                <p 
+                  className="mb-6 leading-loose text-[1.05rem]" 
+                  style={{ color: '#e2e8f0' }}
+                  {...props} 
+                />
+              ),
+              h2: ({node, ...props}) => (
+                <h2 
+                  className="text-xl md:text-2xl font-bold mt-8 mb-4 drop-shadow-[0_1px_4px_rgba(192,142,90,0.3)]"
+                  style={{ color: '#c08e5a' }}
+                  {...props}
+                />
+              ),
+              h3: ({node, ...props}) => (
+                <h3 
+                  className="text-lg md:text-xl font-semibold mt-6 mb-2 text-amber-200/90"
+                  {...props}
+                />
+              ),
+              strong: ({node, ...props}) => (
+                <strong 
+                  className="font-bold text-amber-200/90" 
+                  {...props} 
+                />
+              )
+            }}
+          >
+            {cleanedContent}
+          </ReactMarkdown>
+        </article>
+      </div>
+
+      <style>{`
+        @keyframes auroraMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
     </div>
   );
 };
