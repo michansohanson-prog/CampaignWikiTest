@@ -19,7 +19,10 @@ export const WikiProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [activePageId, setActivePageId] = useState(null);
   const [error, setError] = useState(null);
+  // State for category filtering
   const [filterCategory, setFilterCategory] = useState('all');
+  // New state for search query
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchWikiData()
@@ -43,12 +46,29 @@ export const WikiProvider = ({ children }) => {
     ) || null;
   };
 
+  // This logic now handles BOTH the category and the search query simultaneously
   const getFilteredEntries = () => {
-    if (filterCategory === 'all') return entries;
-    
-    // Look up the correct singular type from our map
-    const dataType = CATEGORY_MAP[filterCategory];
-    return entries.filter(e => e.type === dataType);
+    let filtered = entries;
+
+    // 1. Filter by Category
+    if (filterCategory !== 'all') {
+      const dataType = CATEGORY_MAP[filterCategory];
+      filtered = filtered.filter(e => e.type === dataType);
+    }
+
+    // 2. Filter by Search Query (Title, Summary, or Tags)
+    if (searchQuery.trim().length > 0) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(entry => {
+        return (
+          entry.title.toLowerCase().includes(query) ||
+          (entry.summary && entry.summary.toLowerCase().includes(query)) ||
+          entry.tags?.some(tag => tag.toLowerCase().includes(query))
+        );
+      });
+    }
+
+    return filtered;
   };
 
   return (
@@ -59,9 +79,11 @@ export const WikiProvider = ({ children }) => {
       activePageId,
       setActivePageId,
       setFilterCategory,
+      setSearchQuery, // Exporting the setter for the SearchBar component
+      searchQuery,    // Exporting the query so UI can show what's being searched
       getActivePage: getActivePage,
       getFilteredEntries: getFilteredEntries,
-      currentFilter: filterCategory // Export this so the UI knows what's active
+      currentFilter: filterCategory
     }}>
       {children}
     </WikiContext.Provider>

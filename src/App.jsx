@@ -4,14 +4,14 @@ import { useWiki } from './context/WikiContext';
 import { Gallery } from './components/wiki/Gallery';
 import { PageViewer } from './components/wiki/PageViewer';
 import { Sidebar } from './components/wiki/Sidebar';
+import { SearchBar } from './components/wiki/SearchBar';
 
 function AppContent() {
   const { entries, loading, error } = useWiki();
-  
-  // Option 2: Set 'character' as the active filter by default instead of null.
+  // Option 2: Set 'character' as the active filter by default.
   const [activeFilter, setActiveFilter] = useState('character');
 
-  // This list now stays consistent with your Markdown file types
+  // Hardcoded categories to ensure consistency between UI and Context mapping
   const categories = [
     { id: 'character', label: 'Characters' },
     { id: 'faction', label: 'Factions' },
@@ -38,31 +38,25 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-4 md:p-8">
+    // Added bottom padding (pb-32) so the content doesn't get hidden behind the fixed search bar
+    <div className="min-h-screen bg-slate-900 text-white p-4 md:p-8 pb-32">
       <header className="mb-12 text-center">
         <h1 className="text-5xl font-bold mb-2">Campaign Bible</h1>
         <p className="text-slate-400">Your world, organized.</p>
       </header>
 
-      {/* Container to keep Sidebar and Gallery aligned */}
       <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto items-start">
         <Sidebar 
-          // Pass the labels only; the context will handle the filtering logic
           categories={categories.map(c => c.label)} 
           onFilterChange={(type) => setActiveFilter(type)} 
         />
         <main className="flex-1 w-full">
-          {/* 
-            We pass entries and our activeFilter state to the Gallery.
-            Note: If you want to use the NEW context logic fully, 
-            we can remove 'entries' as a prop later, but this works perfectly now!
-          */}
-          <Gallery 
-            entries={entries} 
-            filterType={activeFilter} 
-          />
+          <Gallery entries={entries} filterType={activeFilter} />
         </main>
       </div>
+
+      {/* Fixed Bottom Search Bar */}
+      <SearchBar />
     </div>
   );
 }
