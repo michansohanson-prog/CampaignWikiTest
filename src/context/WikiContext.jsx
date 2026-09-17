@@ -40,6 +40,11 @@ export const WikiProvider = ({ children }) => {
       });
   }, []);
 
+  // --- NEW: Clear search query when category changes ---
+  useEffect(() => {
+    setSearchQuery('');
+  }, [filterCategory]);
+
   const normalize = (str) => {
     if (!str) return "";
     return str.toLowerCase().replace(/[^a-z0-9]/g, "");
