@@ -5,7 +5,7 @@ parent_id: root
 summary: A glowing longsword that radiates warmth and burns the undead.
 ---
 
-![Item](assets/sunblade-of-aethelgard-item.webp)
+![Item](/CampaignWikiTest/campaign_data/assets/sunblade-of-aethelgard-item.webp)
 
 # Sunblade of Aethelgard
 A legendary blade forged in the heart of a dying star (or so the myths say). The blade pulses with a warm, golden light that intensifies when it is drawn against creatures of unlife.

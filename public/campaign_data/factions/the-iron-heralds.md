@@ -5,7 +5,7 @@ parent_id: root
 summary: A disciplined mercenary company known for their heavy armor and unwavering loyalty.
 ---
 
-![Banner](assets/iron-heralds-faction.webp)
+![Banner](/CampaignWikiTest/campaign_data/assets/iron-heralds-faction.webp)
 
 # The Iron Heralds
 The Iron Heralds are a professional military organization that provides security, logistics, and heavy-hitting warfare services to the highest bidder. They pride themselves on discipline over glory.

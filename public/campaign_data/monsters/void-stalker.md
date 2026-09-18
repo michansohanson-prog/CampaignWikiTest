@@ -5,7 +5,7 @@ parent_id: root
 summary: A predatory creature from the ethereal plane that feeds on fear.
 ---
 
-![Portrait](assets/void-stalker-portrait.webp)
+![Portrait](/CampaignWikiTest/campaign_data/assets/void-stalker-portrait.webp)
 
 # Void Stalker
 The Void Stalker is a terrifying predator that exists partially between planes. It can "blink" short distances, appearing as a blur of purple-black smoke before striking with razor-sharp claws.
