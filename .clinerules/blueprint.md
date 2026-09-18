@@ -16,7 +16,7 @@ This document serves as the "Master Plan" for building a scalable, persistent, a
 - **Data Format:** Markdown (.md) files with YAML Frontmatter (Human-readable, AI-friendly).
 - **Local Engine:** Remote Fetch / API (Primary for players) & Public Folder Proxy (DM Development).
 - **Search/Indexing:** Global Search functionality prioritizing keywords over category filtering.
-- **Deployment Target:** GitHub Pages (Hosting the public version of the wiki).
+- **Deployment Target:** GitHub Pages via **GitHub Actions** CI/CD pipeline (Hostable in subfolders like `/CampaignWikiTest/`).
 
 ## 3. Architectural Standards (The "Source of Truth")
 Every feature must follow the **Service -> Hook -> Component** pipeline. Do not skip these layers.
@@ -57,7 +57,15 @@ Every feature must follow the **Service -> Hook -> Component** pipeline. Do not 
 - **Search Engine Repair:** Restored Global Search functionality. The search bar now prioritizes keywords over the sidebar selection, ensuring you can find any piece of lore regardless of which tab is active. Added regex highlighting for results.
 - **UI Stability & Polish:** Stabilized and preserved the "Long Tile" Gallery layout; resolved desktop-specific layout shifts in the search bar during input initialization; purged Tailwind linting warnings.
 - **Tag Feature Scrub:** Successfully scrubbed all tag states, discovery logic, and visual elements from the entire stack to reduce maintenance complexity.
-- **Pathing Correction:** Moved `campaign_data` to `/public/` folder and updated service paths to absolute root paths (`/`) to resolve 404 errors on nested routes.
+- **Pathing Correction & Subfolder Support:** 
+    - Moved `campaign_data` to `/public/` folder for public accessibility.
+    - Configured `vite.config.js` with a specific `base` path (`/CampaignWikiTest/`) to support subfolder deployment on GitHub Pages.
+    - Synced React Router `basename` with the base path to maintain routing integrity.
+    - Updated `index.html` entry point to relative paths (`./src/main.jsx`) for robust bundling.
+
+### ✅ Deployment Pipeline:
+- **GitHub Actions CI/CD:** Established an automated build pipeline in `.github/workflows/deploy.yml`. 
+- **Build Logic:** Configured workflow to perform `npm install`, execute `npm run build`, and explicitly deploy the compiled `/dist` folder contents, preventing browsers from attempting to load raw source files (`.jsx`).
 
 ---
 
@@ -68,7 +76,7 @@ Every feature must follow the **Service -> Hook -> Component** pipeline. Do not 
 2.  **Mobile Optimization:** Fine-tune touch targets and "sticky" navigation behaviors for mobile browser usage.
 
 ### Phase 3: The Expansion
-1.  Integrate GitHub Pages workflow -> Final polish for player access.
+1.  Integrate final GitHub Pages workflow checks -> Final polish for player access.
 
 ---
-*Snapshot saved under commit: FoundationFunctional_TagScrubbed_PathFixed*
+*Snapshot saved under commit: FoundationFunctional_TagScrubbed_PathFixed_BuildPipelineActive*
