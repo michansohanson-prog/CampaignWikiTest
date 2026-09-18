@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { useWiki } from './context/WikiContext';
 import { Gallery } from './components/wiki/Gallery';
 import { PageViewer } from './components/wiki/PageViewer';
@@ -37,7 +37,7 @@ function AppContent() {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden text-white p-3 md:p-8 pb-32">
       {/* --- BACKGROUND LAYERS --- */}
-      
+
       {/* 1. Base Layer */}
       <div className="fixed inset-0 bg-emerald-950 -z-30" />
 
@@ -108,13 +108,14 @@ function AppContent() {
 
 function App() {
   return (
-    // We add basename to tell React Router it's living in a subfolder
-    <BrowserRouter basename="/CampaignWikiTest">
+    // Removed basename because HashRouter treats the part after '#' as the root.
+    // Vite's 'base' config in vite.config.js handles our folder pathing for assets.
+    <HashRouter>
       <Routes>
         <Route path="/" element={<AppContent />} />
         <Route path="/wiki/:id" element={<PageViewer />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
