@@ -23,11 +23,15 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: .
+        working-directory: ./
 
       - name: Build Project
         run: npm run build
-        working-directory: .
+        working-directory: ./
 
       - name: Setup Pages
         uses: actions/deploy-pages@v4
+        with:
+          # This is the critical part we are adding/fixing
+          # It ensures only the 'dist' folder (the built site) goes live.
+          source-dir: './dist'
