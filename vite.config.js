@@ -9,11 +9,10 @@ export default defineConfig({
     tailwindcss(),
   ],
   /* 
-     DEPLOYMENT NOTE: 
-     When you eventually deploy to GitHub Pages, uncomment the line below 
-     and replace '/repository-name/' with your actual repository name.
+     IMPORTANT: This is the final step for your GitHub Pages deployment.
+     It tells Vite that all assets are inside the /CampaignWikiTest/ subfolder.
   */
-  // base: '/my-campaign-wiki/',
+  base: '/CampaignWikiTest/', 
 
   server: {
     port: 5173,
@@ -24,6 +23,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
-    minify: 'terser', // Ensure terser is installed if you want maximum compression
+    minify: 'terser', 
   }
 })

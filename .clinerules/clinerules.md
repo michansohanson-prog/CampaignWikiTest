@@ -1,6 +1,3 @@
-Here is the fully updated and consolidated content for your `.clinerules/clinerules.md` file. It now includes all our previous updates, the requirement for Plan Mode exclusivity, the rule for providing complete copy/pasteable files, and the critical distinction between Instructional Paths and Source Code paths.
-
-```markdown
 # Project Context & Rules: MyCampaignWebApp (DnD Campaign Wiki)
 
 ## 1. Core Identity & Philosophy

@@ -108,7 +108,8 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
+    // We add basename to tell React Router it's living in a subfolder
+    <BrowserRouter basename="/CampaignWikiTest">
       <Routes>
         <Route path="/" element={<AppContent />} />
         <Route path="/wiki/:id" element={<PageViewer />} />
